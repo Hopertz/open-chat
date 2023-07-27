@@ -1,20 +1,20 @@
 import React, {useState} from 'react'
+import { sendMsg } from "../api";
 
-const ChatFooter = ({socket}) => {
+const ChatFooter = () => {
     const [message, setMessage] = useState("")
-    const handleTyping = () => socket.emit("typing",`${localStorage.getItem("userName")} is typing`)
 
     const handleSendMessage = (e) => {
         e.preventDefault()
         if(message.trim() && localStorage.getItem("userName")) {
-        socket.emit("message", 
-            {
-            text: message, 
-            name: localStorage.getItem("userName"), 
-            id: `${socket.id}${Math.random()}`,
-            socketID: socket.id
-            }
-        )
+
+          let text = {
+                text: message, 
+                user: localStorage.getItem("userName"), 
+                type: 1,
+                }
+
+        sendMsg(JSON.stringify(text))
         }
         setMessage("")
     }
@@ -27,7 +27,7 @@ const ChatFooter = ({socket}) => {
             className='message' 
             value={message} 
             onChange={e => setMessage(e.target.value)}
-            onKeyDown={handleTyping}
+            // onKeyDown={handleTyping}
             />
             <button className="sendBtn">SEND</button>
         </form>

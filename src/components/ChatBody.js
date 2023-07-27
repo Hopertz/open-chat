@@ -1,7 +1,7 @@
 import React from 'react'
 import {useNavigate} from "react-router-dom"
 
-const ChatBody = ({messages, typingStatus, lastMessageRef}) => { 
+const ChatBody = ({messages,lastMessageRef}) => { 
   const navigate = useNavigate()
   
 
@@ -21,26 +21,24 @@ const ChatBody = ({messages, typingStatus, lastMessageRef}) => {
 
         <div className='message__container'>
           {messages.map(message => (
-            message.name === localStorage.getItem("userName") ? (
-              <div className="message__chats" key={message.id}>
+
+            message.body.user === localStorage.getItem("userName") ? (
+              <div className="message__chats" >
             <p className='sender__name'>You</p>
             <div className='message__sender'>
-                <p>{message.text}</p>
+                <p>{message.body.text}</p>
             </div>
           </div>
             ): (
               <div className="message__chats" key={message.id}>
-            <p>{message.name}</p>
+            <p>{message.body.user}</p>
             <div className='message__recipient'>
-                <p>{message.text}</p>
+                <p>{message.body.text}</p>
             </div>
           </div>
             )
             ))}
 
-          <div className='message__status'>
-            <p>{typingStatus}</p>
-          </div>
           <div ref={lastMessageRef} />   
         </div>
     </>
