@@ -1,11 +1,12 @@
 import React from 'react'
 import {useNavigate} from "react-router-dom"
 
-const ChatBody = ({messages,lastMessageRef}) => { 
+const ChatBody = ({messages, typingStatus, lastMessageRef}) => { 
   const navigate = useNavigate()
   
 
   const handleLeaveChat = () => {
+    console.log("leaving chat", localStorage.getItem("userName"))
     localStorage.removeItem("userName")
     navigate("/")
     window.location.reload()
@@ -21,24 +22,26 @@ const ChatBody = ({messages,lastMessageRef}) => {
 
         <div className='message__container'>
           {messages.map(message => (
-
-            message.body.user === localStorage.getItem("userName") ? (
-              <div className="message__chats" >
+            message.name === localStorage.getItem("userName") ? (
+              <div className="message__chats" key={message.id}>
             <p className='sender__name'>You</p>
             <div className='message__sender'>
-                <p>{message.body.text}</p>
+                <p>{message.text}</p>
             </div>
           </div>
             ): (
               <div className="message__chats" key={message.id}>
-            <p>{message.body.user}</p>
+            <p>{message.name}</p>
             <div className='message__recipient'>
-                <p>{message.body.text}</p>
+                <p>{message.text}</p>
             </div>
           </div>
             )
             ))}
 
+          <div className='message__status'>
+            <p>{typingStatus}</p>
+          </div>
           <div ref={lastMessageRef} />   
         </div>
     </>

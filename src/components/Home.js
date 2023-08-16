@@ -1,26 +1,21 @@
 import React, {useState} from 'react'
 import {useNavigate} from "react-router-dom"
-import { sendMsg } from "../api";
 
-const Home = () => {
+const Home = ({socket}) => {
     const navigate = useNavigate()
     const [userName, setUserName] = useState("")
 
     const handleSubmit = (e) => {
         e.preventDefault()
         localStorage.setItem("userName", userName)
-        
-    let  msg  = {
-          text: "new user join", 
-          type: 0, 
-          user: localStorage.getItem("userName"), 
+        let user = {
+            userName,
+            socketID: socket.id
+        }
 
-          }
-
-      sendMsg(JSON.stringify(msg))
+        socket.emit("newUser",user )
         navigate("/chat")
     }
-
   return (
     <form className='home__container' onSubmit={handleSubmit}>
         <h2 className='home__header'>Sign in to Open Chat</h2>

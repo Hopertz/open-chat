@@ -1,33 +1,33 @@
-import React, { useEffect, useRef} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import ChatBar from './ChatBar'
 import ChatBody from './ChatBody'
 import ChatFooter from './ChatFooter'
 
-const ChatPage = ({props}) => { 
-
-  const messages = props.chatMesssages.map((msg) => (
-    JSON.parse(msg.data)
-  ));
-
-  var users
-  if (messages.length > 0) {
-     users = messages[0].users
-  } 
+const ChatPage = ({socket}) => { 
+  const [messages, setMessages] = useState([])
+  const [typingStatus, setTypingStatus] = useState("")
   const lastMessageRef = useRef(null);
 
+  useEffect(()=> {
+    console.log("socket", Date.now())
+    socket.on("messageResponse", data => setMessages([...messages, data]))
+  }, [socket, messages])
+
+  useEffect(()=> {
+    socket.on("typingResponse", data => setTypingStatus(data))
+  }, [socket])
 
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
     lastMessageRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [props]);
-
+  }, [messages]);
 
   return (
     <div className="chat">
-      <ChatBar users={users}/>
+      <ChatBar socket={socket}/>
       <div className='chat__main'>
-        <ChatBody messages={messages}  lastMessageRef={lastMessageRef}/>
-        <ChatFooter />
+        <ChatBody messages={messages} typingStatus={typingStatus} lastMessageRef={lastMessageRef}/>
+        <ChatFooter socket={socket}/>
       </div>
     </div>
   )
