@@ -9,7 +9,6 @@ const ChatPage = ({socket}) => {
   const lastMessageRef = useRef(null);
 
   useEffect(()=> {
-    console.log("socket", Date.now())
     socket.on("messageResponse", data => setMessages([...messages, data]))
   }, [socket, messages])
 
